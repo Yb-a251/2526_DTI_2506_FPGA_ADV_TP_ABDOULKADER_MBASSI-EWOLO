@@ -1,0 +1,19 @@
+bsp/CMakeFiles/hal2_bsp.dir/drivers/src/altera_avalon_jtag_uart_fd.c.obj: \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/drivers/src/altera_avalon_jtag_uart_fd.c \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/alt_types.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/alt_dev.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/system.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/linker.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/alt_llist.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/priv/alt_dev_llist.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/drivers/inc/altera_avalon_jtag_uart.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/lib/gcc/riscv32-unknown-elf/13.2.0/include/stddef.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/alt_alarm.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/alt_llist.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/priv/alt_alarm.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/alt_warning.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/os/alt_hooks.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/os/alt_sem.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/priv/alt_no_error.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/os/alt_flag.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/drivers/inc/altera_avalon_jtag_uart_fd.h

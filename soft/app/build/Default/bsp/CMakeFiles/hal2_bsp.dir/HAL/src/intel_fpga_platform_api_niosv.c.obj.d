@@ -1,0 +1,21 @@
+bsp/CMakeFiles/hal2_bsp.dir/HAL/src/intel_fpga_platform_api_niosv.c.obj: \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/src/intel_fpga_platform_api_niosv.c \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/intel_fpga_platform_api.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/intel_fpga_platform_api_niosv.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/system.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/linker.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/lib/gcc/riscv32-unknown-elf/13.2.0/include/stdarg.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/lib/gcc/riscv32-unknown-elf/13.2.0/include/stdbool.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/intel_fpga_api_cmn_msg.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/lib/gcc/riscv32-unknown-elf/13.2.0/include/stdint.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/stdint.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/machine/_default_types.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/features.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/_newlib_version.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/_intsup.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/_stdint.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/intel_fpga_platform.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/intel_fpga_platform_niosv.h \
+ C:/intelFPGA_lite/24.1std/riscfree/toolchain/riscv32-unknown-elf/lib/gcc/riscv32-unknown-elf/13.2.0/include/stddef.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/intel_fpga_api_cmn_dfl.h \
+ C:/Users/Loic/Desktop/ensea/niveau2/fpga/advanced/tp_nios_v/soft/bsp/HAL/inc/sys/intel_fpga_api_cmn_inf.h

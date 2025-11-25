@@ -1,0 +1,29 @@
+# Quartus generated files
+c5_pin_model_dump.txt
+db/
+incremental_db/
+*.vhd.bak
+output_files/
+*.qws
+serv_req_info.txt
+
+# Simulation files
+simulation/
+work/
+transcript
+vsim.wlf
+wlft*
+*.wlf
+
+# LaTeX temporary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Temporary files
+temp.vhdl
+*.tmp

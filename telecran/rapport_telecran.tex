@@ -1,0 +1,1224 @@
+\documentclass[12pt,a4paper]{article}
+
+% Packages essentiels
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{lastpage}
+\usepackage{listings}
+\usepackage{circuitikz}
+
+\usetikzlibrary{positioning, calc, backgrounds, arrows.meta}
+\ctikzset{
+    logic ports=ieee,
+    logic ports origin=center,
+}
+
+% Configuration de la page
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm,
+    headheight=30pt
+}
+
+% Couleurs ENSEA
+\definecolor{ensearose}{RGB}{200,16,82}
+\definecolor{enseagris}{RGB}{100,100,100}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+
+% En-tête avec logo
+\fancyhead[L]{\includegraphics[height=1.2cm]{logo/logo_ensea.png}}
+\fancyhead[R]{\textcolor{enseagris}{\small FPGA S7 - TP Télécran}}
+
+% Pied de page
+\fancyfoot[L]{\textcolor{enseagris}{\small MBASSI EWOLO \& ABDOULKADER - 2G1}}
+\fancyfoot[R]{\textcolor{enseagris}{\small \thepage/\pageref{LastPage} - \today}}
+
+% Lignes de séparation
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ensearose,
+    urlcolor=ensearose,
+    citecolor=ensearose
+}
+
+% Style VHDL
+\lstdefinestyle{vhdl}{
+    language=VHDL,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    tabsize=4
+}
+
+%==============================================================================
+% DÉBUT DU DOCUMENT
+%==============================================================================
+
+\begin{document}
+
+%==============================================================================
+% PAGE DE GARDE
+%==============================================================================
+
+\begin{titlepage}
+    \vspace*{-3.05cm}
+    \hspace*{-3.25cm}
+    \includegraphics[width=5cm]{logo/gauche-logo.png}
+    
+    \vspace{4cm}
+    
+    \centering
+    
+    % Titre du TP
+    {\Huge\bfseries TP Mineure fpga S7\\
+FPGA - VHDL\par}
+    \vspace{0.5cm}
+    {\LARGE\bfseries Télécran Numérique HDMI\\sur DE10-Nano \par}
+    
+    \vfill
+    
+    % Bande colorée avec auteurs
+    \begin{tikzpicture}
+        \fill[ensearose] (-8,-0.5) rectangle (8,2.5);
+        \node[white, font=\large, text width=14cm, align=center] at (0,1) {
+            \textbf{Réalisé par :}\\
+            MBASSI EWOLO Loïc Aron\\
+            ABDOULKADER MOHAMED Yacoub
+        };
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    % Date et groupe
+    {\large Groupe : 2G1\par}
+    \vspace{0.3cm}
+    {\large \today\par}
+    
+\end{titlepage}
+
+% TABLE DES MATIÈRES
+\tableofcontents
+\newpage
+
+%==============================================================================
+% CONTENU DU RAPPORT
+%==============================================================================
+
+\section{Introduction}
+
+Ce document présente les travaux pratiques FPGA réalisés sur carte DE10-Nano (Cyclone V). Il comprend deux parties :
+\begin{itemize}
+    \item \textbf{TP1 :} Tutoriel Quartus et chenillard (prise en main)
+    \item \textbf{Projet Télécran :} Implémentation d'un écran magique numérique avec sortie HDMI
+\end{itemize}
+
+\section{TP1 : Tutoriel Quartus}
+
+\subsection{Création du premier projet}
+
+\subsubsection{Question 1 : Inversion du comportement LED}
+
+Le premier code VHDL connectait directement le bouton poussoir à la LED :
+\begin{verbatim}
+led0 <= pushl;
+\end{verbatim}
+
+\textbf{Problème observé :} La LED est allumée par défaut et s'éteint lors de l'appui sur le bouton. Comportement inversé par rapport à l'attendu.
+
+\textbf{Explication :} Le bouton poussoir est actif bas (état '0' quand enfoncé). Il faut inverser le signal.
+
+\textbf{Solution :}
+\begin{verbatim}
+led0 <= not pushl;
+\end{verbatim}
+
+% Espace pour capture écran
+\vspace{1cm}
+
+\subsection{Faire clignoter une LED}
+
+\subsubsection{Question 2 : Broche horloge FPGA\_CLK1\_50}
+
+\textbf{Question :} Sur quelle broche est connectée l'horloge FPGA\_CLK1\_50 ?
+
+\textbf{Réponse :} PIN\_V11 (information extraite du User Manual DE10-Nano, Table 3-4)
+
+\vspace{0.5cm}
+
+\subsubsection{Question 3 : Schéma RTL du clignotant simple}
+
+
+
+% Espace pour schéma dessiné
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{captures/RTL_du_clignotant_simple.png}
+\caption{Schéma RTL du clignotant simple (50 MHz)}
+\end{figure}
+
+\textbf{Observation :} La LED clignote à 25 MHz (trop rapide pour être visible).
+
+\vspace{0.5cm}
+
+\subsubsection{Question 4 : Schéma avec diviseur de fréquence}
+
+\textbf{Code VHDL avec compteur :}
+\begin{lstlisting}[language=VHDL, basicstyle=\ttfamily\small]
+process(i_clk, i_rst_n)
+    variable counter : natural range 0 to 5000000 := 0;
+begin
+    if (i_rst_n = '0') then
+        counter := 0;
+        r_led_enable <= '0';
+    elsif (rising_edge(i_clk)) then
+        if (counter = 5000000) then
+            counter := 0;
+            r_led_enable <= '1';
+        else
+            counter := counter + 1;
+            r_led_enable <= '0';
+        end if;
+    end if;
+end process;
+\end{lstlisting}
+
+\textbf{Schéma attendu :} Compteur 0-5000000 + comparateur + registre LED avec enable
+
+% Espace pour schéma
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{captures/RTL_du_clignotant_visible.png}
+\caption{Schéma RTL avec diviseur de fréquence (clignotement visible)}
+\end{figure}
+
+\textbf{Calcul fréquence :} $f_{LED} = \frac{50\,\text{MHz}}{5\,000\,000 \times 2} = 5\,\text{Hz}$ (clignotement visible)
+
+\vspace{0.5cm}
+
+\subsubsection{Question 5 : Signification de \_n dans i\_rst\_n}
+
+\textbf{Question :} Que signifie \_n dans i\_rst\_n ? Pourquoi ?
+
+\textbf{Réponse :} 
+\begin{itemize}
+    \item \textbf{\_n} signifie \textbf{negated} ou \textbf{active low} (actif bas)
+    \item Le reset est actif quand le signal est à '0' (logique inversée)
+    \item Convention standard en électronique numérique : 
+    \begin{itemize}
+        \item i\_rst : reset actif haut (actif à '1')
+        \item i\_rst\_n : reset actif bas (actif à '0')
+    \end{itemize}
+    \item Sur la carte DE10-Nano, les boutons poussoirs (KEY) sont actifs bas par défaut
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Chenillard}
+
+\subsubsection{Question 6 : Implémentation du chenillard}
+
+\textbf{Objectif :} Créer un effet de chenillard sur les LEDs (déplacement séquentiel de gauche à droite).
+
+\textbf{Principe :}
+\begin{itemize}
+    \item Utiliser un compteur pour ralentir la fréquence
+    \item Utiliser un registre à décalage (shift register) pour déplacer le bit actif
+    \item Gérer le retour en arrière (optionnel)
+\end{itemize}
+
+% Espace pour captures
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{captures/chenillard_avec_retour_en_arrière.png}
+\hfill
+\includegraphics[width=0.95\textwidth]{captures/chenillard_avec_et_sans_retour_en_arrière.png}
+\caption{Démonstration chenillard : avec et sans retour en arrière}
+\end{figure}
+
+\textbf{Code principe (registre à décalage) :}
+\begin{lstlisting}[language=VHDL, basicstyle=\ttfamily\small]
+signal r_leds : std_logic_vector(9 downto 0) := "0000000001";
+
+-- A chaque enable du compteur
+r_leds <= r_leds(8 downto 0) & r_leds(9);  -- Rotation gauche
+\end{lstlisting}
+
+\newpage
+\section{Projet Télécran}
+\section{Gestion des encodeurs}
+
+\subsection{Principe de fonctionnement}
+
+Un encodeur rotatif génère deux signaux en quadrature (A et B) déphasés de 90°. Le sens de rotation est déterminé par l'ordre des transitions :
+\begin{itemize}
+    \item \textbf{Rotation horaire (incrément)} : A monte avant B ou A descend après B
+    \item \textbf{Rotation anti-horaire (décrément)} : B monte avant A ou B descend après A
+\end{itemize}
+
+Les conditions de détection sont :
+\begin{itemize}
+    \item \textbf{Incrément} :
+    \begin{enumerate}
+        \item Front montant sur A et B = '0'
+        \item Front descendant sur A et B = '1'
+    \end{enumerate}
+    \item \textbf{Décrément} :
+    \begin{enumerate}
+        \item Front montant sur B et A = '0'
+        \item Front descendant sur B et A = '1'
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Détection de fronts}
+
+\subsubsection{Question 7 : Principe du détecteur de fronts}
+
+Le schéma fourni dans le TP utilise une chaîne de deux bascules D pour détecter les fronts montants. Il doit être complété pour gérer un encodeur en quadrature.
+
+\textbf{Principe de base (fourni dans le TP) :}
+
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[scale=1.1, transform shape]
+
+% Entrées
+\draw[thick] (-2, 0.5) node[left] {\textbf{A}} -- (-0.5, 0.5);
+\draw[thick] (-2, -0.5) node[left] {\textbf{CLK}} -- (-0.5, -0.5);
+
+% FF1
+\node[flipflop D] (ff1) at (0.5, 0) {};
+\node[above=4mm] at (ff1.north) {FF1};
+\draw (ff1.pin 1) node[left, font=\tiny] {D};
+\draw (ff1.pin 3) node[left, font=\tiny] {CLK};
+\draw (ff1.pin 6) node[right, font=\tiny] {Q};
+\draw (-0.5, 0.5) -- (ff1.pin 1);
+\draw (-0.5, -0.5) -- (ff1.pin 3);
+
+% FF2
+\node[flipflop D] (ff2) at (3.5, 0) {};  % ← Espacement réduit à 3.5
+\node[above=4mm] at (ff2.north) {FF2};
+\draw (ff2.pin 1) node[left, font=\tiny] {D};
+\draw (ff2.pin 3) node[left, font=\tiny] {CLK};
+\draw (ff2.pin 6) node[right, font=\tiny] {Q};
+\draw (ff1.pin 6) -- (ff2.pin 1) 
+    node[midway, above=2mm, font=\scriptsize] {$D_1$};
+\draw (-0.5, -0.5) -| (ff2.pin 3);
+
+% NOT - Alignée horizontalement
+\node[not port, scale=1.2] (not1) at (6, 0) {};  % ← Espacement uniforme
+\node[above=2mm] at (not1.north) {\scriptsize NOT};
+\draw[thick] (ff2.pin 6) -- (not1.in) 
+    node[midway, above=2mm, font=\scriptsize] {$D_2$};
+
+% AND - Alignée horizontalement
+\node[and port, scale=1.2] (and1) at (8.5, 0) {};  % ← Espacement uniforme
+\node[above=2mm] at (and1.north) {\scriptsize AND};
+\draw[thick] (not1.out) -- (and1.in 1) 
+    node[midway, above=2mm, font=\scriptsize] {$\overline{D_2}$};
+
+% Connexion FF1 → AND (entrée basse)
+\draw[thick] (ff1.pin 6) -- ++(0.5, 0) coordinate (branch);
+\draw[thick] (branch) |- (and1.in 2);
+
+% Sortie
+\draw[thick, ->] (and1.out) -- ++(1.2, 0) 
+    node[right, font=\bfseries] {rising\_edge};
+
+% Formule
+\node[below=1.8cm of ff2, font=\small, fill=yellow!20, draw, rounded corners, inner sep=4pt] 
+    {$E = D_1 \land \overline{D_2}$};
+
+\end{circuitikz}
+\caption{Détecteur de front montant avec synchroniseur double étage}
+\label{fig:edge_detector_aligned}
+\end{figure}
+
+\textbf{Fonctionnement :}
+\begin{itemize}
+    \item Bascule 1 (FF1) : capture l'état actuel de A → Q1 (D1 dans le code)
+    \item Bascule 2 (FF2) : mémorise l'état précédent → Q2 (D2 dans le code)
+    \item Front montant détecté si : Q1='1' ET Q2='0'
+    \item Signal de sortie : Q1 AND (NOT Q2) = impulsion d'1 cycle
+\end{itemize}
+
+\textbf{Correspondance schéma $\leftrightarrow$ code VHDL :}
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Élément} & \textbf{Schéma} & \textbf{Code VHDL} \\
+\hline
+Entrée & A & \texttt{i\_ch\_a} \\
+Sortie FF1 & D1 & \texttt{r\_a\_ff1} \\
+Sortie FF2 & D2 & \texttt{r\_a\_ff2} \\
+Détection & $D_1 \land \overline{D_2}$ & \texttt{r\_a\_ff1 and not r\_a\_ff2} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Important :} En VHDL synchrone, utiliser des signaux distincts pour chaque bascule (r\_a\_ff1, r\_a\_ff2) car l'ordre des affectations n'importe pas - toutes utilisent les valeurs \textit{avant} le front d'horloge.
+
+\textbf{Code disponible sur GitHub : \texttt{encoder.vhd}}
+
+\subsubsection{Schéma complet pour encodeur en quadrature}
+
+Pour gérer les deux sens de rotation, il faut :
+\begin{itemize}
+    \item Détecter les fronts montants ET descendants sur A et B
+    \item Combiner avec l'état de l'autre voie
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[scale=0.65, transform shape, every node/.style={font=\sffamily\footnotesize}]
+
+% Synchronisation A
+\node[flipflop D] (ffa1) at (0, 4) {};
+\node[flipflop D] (ffa2) at (2.5, 4) {};
+\draw (-1.5, 4.3) node[left] {\textbf{A}} -- (ffa1.pin 1);
+\draw (ffa1.pin 6) -- (ffa2.pin 1) node[midway, above, font=\tiny] {$A_s$};
+\draw (ffa2.pin 6) -- ++(0.8, 0) node[midway, above, font=\tiny] {$A_d$} coordinate (ad);
+
+% Synchronisation B
+\node[flipflop D] (ffb1) at (0, 1.5) {};
+\node[flipflop D] (ffb2) at (2.5, 1.5) {};
+\draw (-1.5, 1.8) node[left] {\textbf{B}} -- (ffb1.pin 1);
+\draw (ffb1.pin 6) -- (ffb2.pin 1) node[midway, above, font=\tiny] {$B_s$};
+\draw (ffb2.pin 6) -- ++(0.8, 0) node[midway, above, font=\tiny] {$B_d$} coordinate (bd);
+
+% CLK
+\draw (-1.5, 0.5) node[left] {\textbf{CLK}} coordinate (clk);
+\draw (clk) |- (ffa1.pin 3);
+\draw (clk) |- (ffa2.pin 3);
+\draw (clk) |- (ffb1.pin 3);
+\draw (clk) |- (ffb2.pin 3);
+
+% Détection A
+\node[not port, scale=0.9] (nota) at (5, 4.5) {};
+\node[and port, scale=0.9] (anda1) at (6.5, 5) {};
+\node[and port, scale=0.9] (anda2) at (6.5, 4) {};
+\draw (ad) |- (anda1.in 2);
+\draw (ad) |- (nota.in);
+\draw (nota.out) -- (anda2.in 1);
+\draw (ffa2.pin 6) |- (anda1.in 1);
+\draw (ffa2.pin 6) |- (anda2.in 2);
+\draw (anda1.out) -- ++(0.5, 0) node[right, font=\tiny] {$\uparrow A$};
+\draw (anda2.out) -- ++(0.5, 0) node[right, font=\tiny] {$\downarrow A$};
+
+% Détection B
+\node[not port, scale=0.9] (notb) at (5, 2) {};
+\node[and port, scale=0.9] (andb1) at (6.5, 2.5) {};
+\node[and port, scale=0.9] (andb2) at (6.5, 1.5) {};
+\draw (bd) |- (andb1.in 2);
+\draw (bd) |- (notb.in);
+\draw (notb.out) -- (andb2.in 1);
+\draw (ffb2.pin 6) |- (andb1.in 1);
+\draw (ffb2.pin 6) |- (andb2.in 2);
+\draw (andb1.out) -- ++(0.5, 0) node[right, font=\tiny] {$\uparrow B$};
+\draw (andb2.out) -- ++(0.5, 0) node[right, font=\tiny] {$\downarrow B$};
+
+% Logique
+\node[rectangle, draw, minimum width=2.5cm, minimum height=2.5cm, font=\scriptsize] 
+    (logic) [align=center] at (10, 3.5) {Décodeur\\Quadrature};
+\draw (anda1.out) -| (logic.north);
+\draw (anda2.out) -| (logic.north west);
+\draw (andb1.out) -| (logic.south west);
+\draw (andb2.out) -| (logic.south);
+\draw (logic.east) ++ (0, 0.3) -- ++(0.8, 0) node[right, font=\scriptsize] {inc};
+\draw (logic.east) ++ (0, -0.3) -- ++(0.8, 0) node[right, font=\scriptsize] {dec};
+
+\end{circuitikz}
+\caption{Architecture complète du détecteur d'encodeur}
+\label{fig:encoder_compact}
+\end{figure}
+
+\textbf{Équations logiques :}
+\begin{align*}
+\text{increment} &= (\text{rising\_A} \cdot \overline{\text{B\_sync}}) + (\text{falling\_A} \cdot \text{B\_sync}) \\
+\text{decrement} &= (\text{rising\_B} \cdot \overline{\text{A\_sync}}) + (\text{falling\_B} \cdot \text{A\_sync})
+\end{align*}
+
+\textbf{Explication :}
+\begin{itemize}
+    \item Chaque voie (A et B) passe par 2 bascules pour synchronisation
+    \item Les fronts montants sont détectés par : signal\_sync AND NOT signal\_delayed
+    \item Les fronts descendants sont détectés par : NOT signal\_sync AND signal\_delayed
+    \item L'incrément se produit quand A change et B est stable
+    \item Le décrément se produit quand B change et A est stable
+\end{itemize}
+
+\subsection{Architecture complète pour encodeur}
+
+Pour gérer les deux sens de rotation, il faut étendre ce principe aux deux voies A et B :
+
+\subsubsection{Implémentation VHDL}
+
+Le composant \texttt{encoder} est générique et paramétrable. Le paramètre \texttt{g\_counter\_width} permet de définir la taille du compteur de position.
+
+\textbf{Code source disponible sur GitHub : \texttt{encoder.vhd}}
+
+\textbf{Points clés de l'implémentation :}
+\begin{itemize}
+    \item \textbf{Synchronisation à 2 étages} : Évite les erreurs de lecture des signaux
+    \item \textbf{Détection de fronts} : Logique combinatoire simple (AND + NOT)
+    \item \textbf{Compteur signé} : Type \texttt{unsigned} pour gérer débordement automatique
+    \item \textbf{Reset asynchrone} : Initialise position à 0
+\end{itemize}
+
+
+\textbf{Points de vérification :}
+\begin{itemize}
+    \item Les impulsions \texttt{s\_increment} et \texttt{s\_decrement} doivent durer exactement 1 cycle d'horloge
+    \item La position doit changer uniquement sur ces impulsions
+    \item Pas d'incréments/décréments simultanés
+    \item Le reset doit ramener la position à 0 immédiatement
+\end{itemize}
+
+\textbf{Commande de simulation :}
+\begin{lstlisting}[language=bash, numbers=none]
+cd telecran
+vsim -do sim_encoder.do
+\end{lstlisting}
+
+\subsubsection{Résultats de simulation}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{captures/simulation_encoder.png}
+\caption{Chronogramme ModelSim de l'encodeur : signaux A/B en quadrature, détection des fronts et évolution de la position}
+\label{fig:sim_encoder}
+\end{figure}
+
+\textbf{Observations :}
+\begin{itemize}
+    \item Les impulsions \texttt{s\_increment} et \texttt{s\_decrement} durent exactement 1 cycle
+    \item La position s'incrémente/décrémente correctement selon le sens de rotation
+    \item Le reset ramène immédiatement la position à 0
+    \item Aucun comptage erroné détecté (pas de glitch)
+\end{itemize}
+
+\newpage
+\subsection{Implémentation VHDL}
+
+\subsubsection{Question 8 : Implémentation encodeur en VHDL}
+
+Modification du fichier \texttt{telecran.vhd} pour instancier deux encodeurs (gauche et droit) :
+
+\textbf{Instanciations :}
+\begin{itemize}
+    \item \textbf{Encodeur gauche} : Contrôle axe horizontal (X), compteur 10 bits
+    \item \textbf{Encodeur droit} : Contrôle axe vertical (Y), compteur 10 bits (réduit à 8 bits pour correspondance 480 lignes)
+    \item \textbf{Affichage test} : Position encodeur gauche sur LEDs mezzanine
+\end{itemize}
+
+\textbf{Code complet disponible sur GitHub : \texttt{encoder.vhd} et \texttt{telecran.vhd}}
+
+\vspace{0.5cm}
+
+\subsubsection{Question 9 : Simulation de l'encodeur}
+
+\textbf{Validation :} Les LEDs doivent s'allumer/éteindre en fonction de la rotation de l'encodeur gauche.
+
+\vspace{0.5cm}
+
+\subsubsection{Question 10 : Test sur carte DE10-Nano}
+
+\textbf{Fichiers à ajouter au projet Quartus :}
+\begin{itemize}
+    \item \texttt{encoder.vhd}
+    \item \texttt{telecran.vhd} (modifié)
+\end{itemize}
+
+\textbf{Contraintes des broches (Pin Planner) :}
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Signal} & \textbf{Broche FPGA} & \textbf{Direction} \\
+\hline
+\texttt{i\_clk\_50} & PIN\_AF14 & Input \\
+\texttt{i\_rst\_n} & PIN\_AH17 (KEY0) & Input \\
+\hline
+\texttt{i\_left\_ch\_a} & PIN\_AF27 & Input \\
+\texttt{i\_left\_ch\_b} & PIN\_AF28 & Input \\
+\texttt{i\_right\_ch\_a} & PIN\_AA26 & Input \\
+\texttt{i\_right\_ch\_b} & PIN\_AA13 & Input \\
+\hline
+\texttt{o\_leds[0..9]} & PIN\_AG28...AG15 & Output \\
+\texttt{o\_de10\_leds[0..7]} & PIN\_W15...AA24 & Output \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Procédure de test :}
+\begin{enumerate}
+    \item Ouvrir le projet Quartus \texttt{telecran.qpf}
+    \item Ajouter \texttt{encoder.vhd} au projet : \textit{Project > Add Files}
+    \item Compiler le projet : \textit{Processing > Start Compilation}
+    \item Programmer la carte : \textit{Tools > Programmer}
+    \item Tourner l'encodeur gauche → les 10 LEDs de la mezzanine changent
+    \item Tourner l'encodeur droit → les 8 LEDs de la DE10-Nano changent
+\end{enumerate}
+
+\textbf{Résultats attendus :}
+\begin{itemize}
+    \item Rotation horaire : valeur augmente (plus de LEDs allumées)
+    \item Rotation anti-horaire : valeur diminue (moins de LEDs allumées)
+    \item Reset (KEY0) : toutes les LEDs s'éteignent
+\end{itemize}
+
+\newpage
+\section{Contrôleur HDMI}
+
+\textbf{Spécifications 720×480@60Hz}
+
+\subsubsection{Question 11 : Format de couleur RGB}
+
+Le contrôleur HDMI ADV7513 utilisé sur la carte DE10-Nano supporte plusieurs formats de couleur. Pour ce projet, nous utilisons le format RGB 24-bit (True Color).
+
+\textbf{Allocation des bits sur le bus \texttt{o\_hdmi\_tx\_d[23:0]} :}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Canal} & \textbf{Bits} & \textbf{Nombre de bits} \\
+\hline
+Rouge (R) & [23:16] & 8 bits (256 niveaux) \\
+\hline
+Vert (G) & [15:8] & 8 bits (256 niveaux) \\
+\hline
+Bleu (B) & [7:0] & 8 bits (256 niveaux) \\
+\hline
+\end{tabular}
+\caption{Format RGB 24-bit (8-8-8)}
+\label{tab:rgb_format}
+\end{table}
+
+\textbf{Exemples de couleurs courantes :}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Couleur} & \textbf{Hex} & \textbf{R[23:16]} & \textbf{G[15:8]} & \textbf{B[7:0]} \\
+\hline
+Noir & \texttt{0x000000} & 0x00 & 0x00 & 0x00 \\
+Blanc & \texttt{0xFFFFFF} & 0xFF & 0xFF & 0xFF \\
+Rouge & \texttt{0xFF0000} & 0xFF & 0x00 & 0x00 \\
+Vert & \texttt{0x00FF00} & 0x00 & 0xFF & 0x00 \\
+Bleu & \texttt{0x0000FF} & 0x00 & 0x00 & 0xFF \\
+Jaune & \texttt{0xFFFF00} & 0xFF & 0xFF & 0x00 \\
+Cyan & \texttt{0x00FFFF} & 0x00 & 0xFF & 0xFF \\
+Magenta & \texttt{0xFF00FF} & 0xFF & 0x00 & 0xFF \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Profondeur de couleur totale :} $2^{24} = 16\,777\,216$ couleurs distinctes.
+
+\subsubsection{Question 6 : Timings HDMI 720×480}
+
+La norme CEA-861 définit les timings pour la résolution 480p (720×480@60Hz). Ces valeurs sont critiques pour la synchronisation correcte avec l'écran.
+
+\textbf{Timings horizontaux (par ligne) :}
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Zone} & \textbf{Pixels} & \textbf{Plage} \\
+\hline
+Visible & 720 & 0-719 \\
+Front Porch & 16 & 720-735 \\
+Sync Pulse & 62 & 736-797 \\
+Back Porch & 60 & 798-857 \\
+\hline
+\textbf{Total} & \textbf{858} & \\
+\hline
+\end{tabular}
+\caption{Timings horizontaux}
+\label{tab:h_timings}
+\end{table}
+
+\textbf{Timings verticaux (par trame) :}
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Zone} & \textbf{Lignes} & \textbf{Plage} \\
+\hline
+Visible & 480 & 0-479 \\
+Front Porch & 9 & 480-488 \\
+Sync Pulse & 6 & 489-494 \\
+Back Porch & 30 & 495-524 \\
+\hline
+\textbf{Total} & \textbf{525} & \\
+\hline
+\end{tabular}
+\caption{Timings verticaux}
+\label{tab:v_timings}
+\end{table}
+
+\textbf{Calcul de la fréquence pixel :}
+\begin{align*}
+f_{\text{pixel}} &= H_{\text{total}} \times V_{\text{total}} \times f_{\text{refresh}} \\
+f_{\text{pixel}} &= 858 \times 525 \times 60\,\text{Hz} \\
+f_{\text{pixel}} &= 27\,027\,000\,\text{Hz} \approx 27\,\text{MHz}
+\end{align*}
+
+\textbf{Caractéristiques des signaux de synchronisation :}
+\begin{itemize}
+    \item \textbf{HSYNC} : Actif bas pendant la Sync Pulse horizontale (pixels 736-797)
+    \item \textbf{VSYNC} : Actif bas pendant la Sync Pulse verticale (lignes 489-494)
+    \item \textbf{Data Enable (DE)} : Actif haut uniquement dans la zone visible (x<720 ET y<480)
+\end{itemize}
+
+\subsection{Architecture du contrôleur HDMI}
+
+\subsubsection{Schéma bloc}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    block/.style={rectangle, draw, minimum width=2.5cm, minimum height=1cm, font=\footnotesize},
+    signal/.style={->, >=stealth, thick}
+]
+
+% Bloc principal
+\node[block, minimum width=5cm, minimum height=4.5cm] (ctrl) at (0,0) {};
+\node[above=2mm] at (ctrl.north) {\textbf{hdmi\_controller}};
+
+% Entrées gauche
+\draw[signal] (-4, 1.5) node[left] {i\_clk (27 MHz)} -- (ctrl.west |- 0,1.5);
+\draw[signal] (-4, 0.5) node[left] {i\_rst\_n} -- (ctrl.west |- 0,0.5);
+
+% Compteurs internes
+\node[block, fill=blue!10, minimum width=2cm, minimum height=0.7cm] (hcnt) at (0, 0.8) {r\_h\_counter};
+\node[below=1mm, font=\tiny] at (hcnt.south) {0-857};
+\node[block, fill=blue!10, minimum width=2cm, minimum height=0.7cm] (vcnt) at (0, -0.3) {r\_v\_counter};
+\node[below=1mm, font=\tiny] at (vcnt.south) {0-524};
+
+% Logique combinatoire
+\node[block, fill=yellow!10, minimum width=2cm, minimum height=0.7cm, align=center] (logic) at (0, -1.5) {Logique\\Sync};
+
+% Sorties droite
+\draw[signal] (ctrl.east |- 0,1.5) -- ++(2,0) node[right] {o\_hsync};
+\draw[signal] (ctrl.east |- 0,1) -- ++(2,0) node[right] {o\_vsync};
+\draw[signal] (ctrl.east |- 0,0.5) -- ++(2,0) node[right] {o\_de};
+\draw[signal] (ctrl.east |- 0,0) -- ++(2,0) node[right] {o\_x\_counter};
+\draw[signal] (ctrl.east |- 0,-0.5) -- ++(2,0) node[right] {o\_y\_counter};
+\draw[signal] (ctrl.east |- 0,-1) -- ++(2,0) node[right] {o\_pixel\_address};
+\draw[signal] (ctrl.east |- 0,-1.5) -- ++(2,0) node[right] {o\_pixel\_visible};
+
+\end{tikzpicture}
+\caption{Architecture du contrôleur HDMI}
+\label{fig:hdmi_arch}
+\end{figure}
+
+\subsubsection{Machine à états implicite}
+
+Le contrôleur HDMI n'utilise pas de FSM explicite mais deux compteurs imbriqués qui génèrent automatiquement les zones temporelles :
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.9]
+
+% Timeline horizontale
+\draw[thick, ->] (0,0) -- (14,0) node[right] {Pixels};
+\foreach \x/\label in {0/0, 2.5/720, 4/736, 7/798, 10/858} {
+    \draw (\x,-0.1) -- (\x,0.1) node[above, font=\tiny] {\label};
+}
+
+% Zones
+\fill[green!20] (0,-0.8) rectangle (2.5,0);
+\node[font=\scriptsize] at (1.25,-0.4) {Visible};
+
+\fill[orange!20] (2.5,-0.8) rectangle (4,0);
+\node[font=\scriptsize] at (3.25,-0.4) {Front};
+
+\fill[red!20] (4,-0.8) rectangle (7,0);
+\node[font=\scriptsize] at (5.5,-0.4) {Sync};
+
+\fill[cyan!20] (7,-0.8) rectangle (10,0);
+\node[font=\scriptsize] at (8.5,-0.4) {Back};
+
+% Signaux
+\draw[thick, blue] (0,-1.5) node[left, font=\tiny] {HSYNC} 
+    -- (4,-1.5) -- (4,-2) -- (7,-2) -- (7,-1.5) -- (10,-1.5);
+\draw[thick, red] (0,-2.5) node[left, font=\tiny] {DE} 
+    -- (0,-2.5) -- (0,-3) -- (2.5,-3) -- (2.5,-2.5) -- (10,-2.5);
+
+\end{tikzpicture}
+\caption{Diagramme temporel d'une ligne HDMI}
+\label{fig:hdmi_timing}
+\end{figure}
+
+\textbf{Logique des compteurs :}
+\begin{enumerate}
+    \item \textbf{Compteur horizontal} : Incrémente à chaque cycle d'horloge (27 MHz)
+    \begin{itemize}
+        \item Si $h\_counter < 857$ : $h\_counter \leftarrow h\_counter + 1$
+        \item Si $h\_counter = 857$ : $h\_counter \leftarrow 0$ ET $v\_counter \leftarrow v\_counter + 1$
+    \end{itemize}
+    
+    \item \textbf{Compteur vertical} : Incrémente à chaque fin de ligne
+    \begin{itemize}
+        \item Si $v\_counter < 524$ : $v\_counter \leftarrow v\_counter + 1$
+        \item Si $v\_counter = 524$ : $v\_counter \leftarrow 0$ (nouvelle trame)
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Équations des signaux de sortie :}
+\begin{align*}
+\text{HSYNC} &= \begin{cases}
+0 & \text{si } 736 \leq h\_counter \leq 797 \\
+1 & \text{sinon}
+\end{cases} \\
+\text{VSYNC} &= \begin{cases}
+0 & \text{si } 489 \leq v\_counter \leq 494 \\
+1 & \text{sinon}
+\end{cases} \\
+\text{DE} &= \begin{cases}
+1 & \text{si } h\_counter < 720 \text{ ET } v\_counter < 480 \\
+0 & \text{sinon}
+\end{cases}
+\end{align*}
+
+\subsection{Implémentation VHDL}
+
+\subsubsection{Code source}
+
+Le fichier \texttt{hdmi\_controller.vhd} génère les signaux HDMI selon les timings 720×480@60Hz.
+
+\textbf{Code source disponible sur GitHub : \texttt{hdmi\_controller.vhd}}
+
+\textbf{Points clés :}
+\begin{itemize}
+    \item \textbf{Type \texttt{integer}} : Utilisé au lieu de \texttt{natural} pour compatibilité ModelSim
+    \item \textbf{Reset synchrone} : Initialisation des compteurs à 0 sur front d'horloge
+    \item \textbf{Compteurs imbriqués} : H incrémente chaque cycle, V incrémente chaque ligne
+    \item \textbf{Calcul d'adresse linéaire} : $\text{addr} = y \times 720 + x$ pour accès framebuffer
+\end{itemize}
+
+
+\subsection{Intégration au top-level}
+
+\subsubsection{Modifications dans \texttt{telecran.vhd}}
+
+Ajout du composant HDMI et connexion à la PLL :
+
+\textbf{Connexions principales :}
+\begin{itemize}
+    \item \textbf{Horloge} : s\_clk\_27 (sortie PLL 27 MHz)
+    \item \textbf{Sorties} : o\_hdmi\_tx\_hs, o\_hdmi\_tx\_vs, o\_hdmi\_tx\_de
+    \item \textbf{Compteurs} : s\_x\_counter (0-719), s\_y\_counter (0-479)
+    \item \textbf{Clock HDMI} : Copie directe de s\_clk\_27
+\end{itemize}
+
+\textbf{Code complet disponible sur GitHub : \texttt{telecran.vhd}}
+
+
+\section{Déplacement du pixel}
+
+\subsection{Principe}
+
+Les encodeurs fournissent des positions 10-bit (0-1023) qui doivent être converties en coordonnées écran 720×480.
+
+\textbf{Mise à l'échelle nécessaire :}
+\begin{itemize}
+    \item Encodeur gauche : 10 bits (0-1023) → Axe X (0-719)
+    \item Encodeur droit : 10 bits (0-1023) → Axe Y (0-479)
+\end{itemize}
+
+\textbf{Équations de conversion :}
+\begin{align*}
+x_{\text{pixel}} &= \left\lfloor \frac{\text{position\_gauche} \times 720}{1024} \right\rfloor \\
+y_{\text{pixel}} &= \left\lfloor \frac{\text{position\_droite} \times 480}{1024} \right\rfloor
+\end{align*}
+
+\subsection{Implémentation VHDL}
+
+\textbf{Calculs de conversion :}
+\begin{itemize}
+    \item x\_pixel = (position\_encodeur\_gauche * 720) / 1024
+    \item y\_pixel = (position\_encodeur\_droit * 480) / 1024
+    \item Affichage : pixel blanc si (x\_pixel = x\_counter) ET (y\_pixel = y\_counter)
+\end{itemize}
+
+\textbf{Code disponible sur GitHub : \texttt{telecran.vhd}}
+
+\textbf{Test :} Tourner les encodeurs doit déplacer un pixel blanc sur l'écran.
+
+\newpage
+\section{Mémorisation (Framebuffer)}
+
+\subsubsection{Question 14 : Définition mémoire dual-port}
+
+Une mémoire dual-port (RAM dual-port) est une mémoire disposant de deux ports d'accès indépendants (A et B) fonctionnant simultanément. Caractéristiques :
+\begin{itemize}
+    \item Chaque port a sa propre horloge, adresse, données et signaux de contrôle
+    \item Permet lecture ET écriture simultanées sans conflit (si adresses différentes)
+    \item Indispensable pour le framebuffer : Port A écrit les pixels (encodeurs), Port B lit pour l'affichage (HDMI)
+    \item Évite les problèmes de synchronisation et garantit un affichage fluide
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsubsection{Question 15 : Schéma architecture framebuffer}
+
+\subsection{Architecture RAM dual-port}
+
+Le tracé persistant nécessite une mémoire framebuffer accessible simultanément :
+\begin{itemize}
+    \item \textbf{Port A} : Écriture par les encodeurs (dessin)
+    \item \textbf{Port B} : Lecture par le scan HDMI (affichage)
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    block/.style={rectangle, draw, minimum width=2.5cm, minimum height=1.5cm},
+    arrow/.style={->, >=stealth, thick}
+]
+
+% Bloc RAM
+\node[block, minimum height=3cm, align=center] (ram) at (0,0) {\textbf{dpram}\\(720×480 bits)};
+
+% Port A (écriture)
+\draw[arrow] (-4, 1) node[left, font=\footnotesize] {Position encodeurs} 
+    -- node[midway, above, font=\tiny] {addr\_A} (-2.5, 1) 
+    -- (-2.5, 0.8) -- (ram.west |- 0,0.8);
+\draw[arrow] (-4, 0.3) node[left, font=\footnotesize] {WE='1'} 
+    -- (ram.west |- 0,0.3);
+\draw[arrow] (-4, -0.4) node[left, font=\footnotesize] {data\_A='1'} 
+    -- (ram.west |- 0,-0.4);
+
+% Port B (lecture)
+\draw[arrow] (-4, -1.2) node[left, font=\footnotesize] {Scan HDMI} 
+    -- node[midway, above, font=\tiny] {addr\_B} (-2.5, -1.2) 
+    -- (-2.5, -1) -- (ram.west |- 0,-1);
+\draw[arrow] (ram.east |- 0,-1.2) -- ++(1.5,0) 
+    node[right, font=\footnotesize] {data\_B};
+
+% Logique affichage
+\node[block, minimum width=2cm, minimum height=1cm] (display) at (5, -1.2) {Affichage};
+\draw[arrow] (ram.east |- 0,-1.2) -- (display.west);
+\draw[arrow] (display.east) -- ++(1,0) node[right, font=\footnotesize] {RGB};
+
+\end{tikzpicture}
+\caption{Architecture framebuffer dual-port}
+\label{fig:framebuffer}
+\end{figure}
+
+\subsection{Dimensionnement mémoire}
+
+\textbf{Option A : Framebuffer 1-bit/pixel (retenu)}
+\begin{itemize}
+    \item Taille : $720 \times 480 = 345\,600$ bits = 42.2 KB
+    \item Format : 1 bit par pixel (allumé=\texttt{'1'}, éteint=\texttt{'0'})
+    \item Calcul adresse : $\text{addr} = y \times 720 + x$
+    \item Plage : 0 à 345,599
+\end{itemize}
+
+\textbf{Option B : Framebuffer réduit 360×240}
+\begin{itemize}
+    \item Taille : $360 \times 240 = 86\,400$ bits = 10.5 KB
+    \item Mise à l'échelle : $x_{fb} = x_{pixel}/2$, $y_{fb} = y_{pixel}/2$
+    \item Économie : 4× moins de RAM
+\end{itemize}
+
+\subsection{Code VHDL}
+
+\textbf{Architecture :}
+\begin{itemize}
+    \item \textbf{Port A (\u00e9criture)} : addr = y\_pixel * 720 + x\_pixel, data = '1'
+    \item \textbf{Port B (lecture)} : addr = y\_counter * 720 + x\_counter
+    \item \textbf{Génériques} : 1 bit/pixel, 19 bits d'adresse (345600 pixels)
+    \item \textbf{Affichage} : Blanc si RAM='1', noir sinon
+\end{itemize}
+
+\textbf{Code disponible sur GitHub : \texttt{telecran.vhd} et \texttt{dpram.vhd}}
+
+\textbf{Validation :} Le tracé doit rester visible après déplacement des encodeurs.
+
+\newpage
+\section{Fonction d'effacement}
+
+\subsection{Question 17 : Conception de l'effacement}
+
+L'effacement nécessite de parcourir toute la RAM pour écrire '0'. Une FSM (machine à états finis) gère ce processus.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    state/.style={circle, draw, thick, minimum size=1.5cm, font=\footnotesize},
+    arrow/.style={->, >=stealth, thick}
+]
+
+\node[state] (idle) at (0,0) {IDLE};
+\node[state] (clear) at (5,0) {CLEARING};
+\node[state] (done) at (10,0) {DONE};
+
+\draw[arrow] (idle) -- node[above] {clear\_req='1'} (clear);
+\draw[arrow] (clear) -- node[above] {addr=MAX} (done);
+\draw[arrow] (done) -- node[below] {automatique} (idle);
+
+\node[below=5mm, align=center, font=\scriptsize] at (idle.south) {Attente\\bouton};
+\node[below=5mm, align=center, font=\scriptsize] at (clear.south) {addr++\\RAM[addr]:='0'};
+\node[below=5mm, align=center, font=\scriptsize] at (done.south) {Terminé};
+
+\end{tikzpicture}
+\caption{FSM effacement framebuffer}
+\label{fig:clear_fsm}
+\end{figure}
+
+\textbf{Architecture FSM 3 états :}
+\begin{enumerate}
+    \item \textbf{IDLE} : Attente appui bouton (détection front descendant)
+    \item \textbf{CLEARING} : Parcours RAM addr 0→345599, écriture '0'
+    \item \textbf{DONE} : Retour automatique à IDLE
+\end{enumerate}
+
+\textbf{Multiplexage Port A :}
+\begin{itemize}
+    \item Si CLEARING : addr = compteur, data = '0'
+    \item Sinon : addr = position encodeur, data = '1'
+\end{itemize}
+
+\textbf{Temps d'effacement calculé :}
+\begin{equation}
+t_{\text{clear}} = \frac{345\,600}{27\,\text{MHz}} = 12.8\,\text{ms}
+\end{equation}
+
+Ce temps est imperceptible pour l'utilisateur (< 20 ms).
+
+\subsection{Question 18 : Implémentation et test}
+
+\textbf{Code disponible sur GitHub : \texttt{telecran.vhd}}
+
+L'implémentation VHDL utilise la FSM décrite ci-dessus avec :
+\begin{itemize}
+    \item Détection anti-rebond du bouton gauche (\texttt{i\_left\_pb})
+    \item Compteur d'adresses 0 à 345,599
+    \item Multiplexage du Port A entre dessin et effacement
+    \item Signal \texttt{r\_clear\_req} déclenchant la transition IDLE→CLEARING
+\end{itemize}
+
+\textbf{Validation :} Appuyer sur le bouton gauche doit effacer l'écran instantanément.
+
+Le test sur carte DE10-Nano confirme :
+\begin{itemize}
+    \item Effacement complet en ~13 ms
+    \item Pas d'artefacts visuels pendant l'effacement
+    \item Reprise immédiate du dessin après effacement
+\end{itemize}
+
+\newpage
+\section{Résultats de synthèse Quartus}
+
+\subsection{Rapport de compilation}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{captures/quartus_compilation_report.png}
+\caption{Rapport de compilation Quartus - Flow Summary}
+\label{fig:quartus_report}
+\end{figure}
+
+
+
+\textbf{Fréquences atteintes :}
+\begin{itemize}
+    \item Horloge système (50 MHz) : [Fmax à compléter]
+    \item Horloge HDMI (27 MHz) : [Fmax à compléter]
+    \item Slack positif sur tous les chemins 
+\end{itemize}
+
+\textbf{Chemins critiques :}
+\begin{itemize}
+    \item Calcul adresse framebuffer : multiplication + addition
+    \item Lecture RAM dual-port : latence 1 cycle
+    \item Logique test pattern : division par 90
+\end{itemize}
+
+\subsection{Résultats de simulation HDMI}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{captures/simulation_hdmi_complete.png}
+\caption{Chronogramme ModelSim complet : compteurs H/V, HSYNC, VSYNC, Data Enable}
+\label{fig:sim_hdmi_complete}
+\end{figure}
+
+\subsection{Photos du matériel}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{captures/carte_de10nano.jpg}
+\caption{Carte DE10-Nano avec mezzanine encodeurs connectée}
+\label{fig:carte}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{captures/encodeur_gauche.jpg}
+    \caption{Encodeur rotatif gauche (axe X)}
+    \label{fig:enc_left}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{captures/encodeur_droit.jpg}
+    \caption{Encodeur rotatif droit (axe Y)}
+    \label{fig:enc_right}
+\end{minipage}
+\end{figure}
+
+\subsection{Test pattern HDMI}
+
+\subsubsection{Question 12 : Compilation et test contrôleur HDMI}
+
+Le contrôleur HDMI a été testé avec un pattern de 8 barres verticales de couleur. Ce test valide :
+\begin{itemize}
+    \item Les timings HDMI (compteurs X/Y, HSYNC, VSYNC, Data Enable)
+    \item La génération des couleurs RGB 24-bit
+    \item La synchronisation avec l'horloge 27 MHz
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{captures/test_pattern_hdmi.jpg}
+\caption{Affichage du test pattern 8 barres de couleur sur écran HDMI}
+\label{fig:test_pattern_result}
+\end{figure}
+
+\subsection{Déplacement curseur}
+
+\subsubsection{Question 13 : Implémentation pixel mobile}
+
+Le curseur est affiché en blanc (x"FFFFFF") lorsque les coordonnées du scan HDMI correspondent à la position des encodeurs. Un curseur 11×11 pixels (croix) a été implémenté pour améliorer la visibilité.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{captures/pixel_mobile_curseur.png}
+\caption{Curseur en croix blanche (11×11 pixels) contrôlé par les encodeurs}
+\label{fig:curseur}
+\end{figure}
+
+\subsection{Framebuffer et dessin persistant}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{captures/dessin_le_framebuffer.jpg}
+\caption{Dessin persistant en mémoire (tracé vert) - Exemple ``LE'' manuscrit}
+\label{fig:framebuffer_result}
+\end{figure}
+
+\textbf{Performances framebuffer :}
+\begin{itemize}
+    \item Capacité : 720×480 = 345,600 pixels (1 bit/pixel)
+    \item Écriture : Synchrone avec scan HDMI (27 MHz)
+    \item Effacement : 12.8 ms (345,600 / 27 MHz)
+    \item Affichage : Curseur blanc + tracé vert + fond noir
+\end{itemize}
+
+\newpage
+
+\section{Annexe A : Accès au code source}
+
+\textbf{Dépôt GitHub du projet :}
+\begin{center}
+\url{https://github.com/Yb-a251/2526_DTI_2501_FPGA_TPs_ABDOULKADER_MBASSI-EWOLO}
+\end{center}
+
+\textbf{Fichiers principaux :}
+\begin{itemize}
+    \item \texttt{encoder.vhd} : Décodeur encodeur rotatif quadrature
+    \item \texttt{hdmi\_controller.vhd} : Contrôleur HDMI 720×480@60Hz
+    \item \texttt{telecran.vhd} : Top-level intégrant tous les modules
+    \item \texttt{encoder\_tb.vhd} : Testbench encodeur
+    \item \texttt{hdmi\_controller\_tb.vhd} : Testbench HDMI
+    \item \texttt{dpram.vhd} : RAM dual-port pour framebuffer
+    \item \texttt{pll/} : PLL générateur 27 MHz
+    \item \texttt{i2c/} : Configuration I2C ADV7513
+\end{itemize}
+
+\section{Annexe B : Contraintes Quartus}
+
+\textbf{Fichiers de contraintes disponibles sur GitHub :}
+\begin{itemize}
+    \item \texttt{telecran.qsf} : Affectation des broches (Pin Planner)
+    \item \texttt{telecran.sdc} : Contraintes temporelles (TimeQuest)
+\end{itemize}
+
+\subsection{Principales contraintes de broches}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Signal} & \textbf{Broche} \\
+\hline
+i\_clk\_50 & PIN\_AF14 \\
+i\_rst\_n (KEY0) & PIN\_AH17 \\
+\hline
+i\_left\_ch\_a & PIN\_AF27 \\
+i\_left\_ch\_b & PIN\_AF28 \\
+i\_right\_ch\_a & PIN\_AA26 \\
+i\_right\_ch\_b & PIN\_AA13 \\
+\hline
+o\_hdmi\_tx\_clk & PIN\_AD19 \\
+o\_hdmi\_tx\_de & PIN\_AD12 \\
+o\_hdmi\_tx\_hs & PIN\_AE12 \\
+o\_hdmi\_tx\_vs & PIN\_W8 \\
+\hline
+\end{tabular}
+\caption{Broches principales (DE10-Nano)}
+\end{table}
+
+\subsection{Contraintes temporelles}
+
+\textbf{Horloges définies :}
+\begin{itemize}
+    \item \textbf{i\_clk\_50} : 50 MHz (p\u00e9riode 20 ns)
+    \item \textbf{s\_clk\_27} : 27 MHz g\u00e9n\u00e9r\u00e9e par PLL (multiplieur 27/50)
+    \item \textbf{False paths} : Signaux encodeurs asynchrones
+\end{itemize}
+
+\section{Annexe C : Bibliographie}
+
+\begin{enumerate}
+\item Intel Cyclone V Device Handbook (CV-5V2 2020.03.24)
+\item ADV7513 Programming Guide (Analog Devices)
+\item CEA-861-D : Digital Interface Standard (Consumer Electronics Association)
+\item VHDL-2008 Language Reference Manual (IEEE Std 1076-2008)
+\item Quartus Prime User Guide (Intel, version 24.1)
+\item DE10-Nano User Manual (Terasic Technologies)
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,104 @@
+!SESSION 2025-12-01 11:50:53.295 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-12-01 11:51:17.269
+!MESSAGE Indexed 'bsp' (86 sources, 86 headers) in 1,31 sec: 2 324 declarations; 5 239 references; 150 unresolved inclusions; 6 syntax errors; 463 unresolved names (5,8 %)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-12-01 11:51:27.883
+!MESSAGE Indexed 'app' (1 sources, 0 headers) in 0,005 sec: 3 declarations; 8 references; 3 unresolved inclusions; 0 syntax errors; 2 unresolved names (15 %)
+
+!ENTRY org.eclipse.cdt.core 4 0 2025-12-01 11:51:37.969
+!MESSAGE Error: org/slf4j/LoggerFactory
+!STACK 0
+java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory
+	at org.eclipse.jetty.util.log.Log.getLogger(Log.java:31)
+	at org.eclipse.jetty.util.ajax.JSON.<clinit>(JSON.java:90)
+	at de.marw.cmake.cdt.language.settings.providers.CompileCommandsJsonParser.tryParseJson(CompileCommandsJsonParser.java:258)
+	at de.marw.cmake.cdt.language.settings.providers.CompileCommandsJsonParser.shutdown(CompileCommandsJsonParser.java:612)
+	at org.eclipse.cdt.internal.core.ConsoleOutputSniffer.closeConsoleOutputStream(ConsoleOutputSniffer.java:162)
+	at org.eclipse.cdt.internal.core.ConsoleOutputSniffer$ConsoleOutputStream.close(ConsoleOutputSniffer.java:70)
+	at org.eclipse.cdt.internal.core.ProcessClosure$ReaderThread.close(ProcessClosure.java:101)
+	at org.eclipse.cdt.internal.core.ProcessClosure.isAlive(ProcessClosure.java:194)
+	at org.eclipse.cdt.core.CommandLauncher.waitAndRead(CommandLauncher.java:248)
+	at org.eclipse.cdt.core.CommandLauncherManager$CommandLauncherWrapper.waitAndRead(CommandLauncherManager.java:161)
+	at org.eclipse.cdt.internal.core.BuildRunnerHelper.build(BuildRunnerHelper.java:284)
+	at org.eclipse.cdt.managedbuilder.core.ExternalBuildRunner.invokeExternalBuild(ExternalBuildRunner.java:140)
+	at org.eclipse.cdt.managedbuilder.core.ExternalBuildRunner.invokeBuild(ExternalBuildRunner.java:73)
+	at de.marw.cdt.cmake.core.internal.CMakeBuildRunner.invokeBuild(CMakeBuildRunner.java:129)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.build(CommonBuilder.java:783)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.build(CommonBuilder.java:533)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.build(CommonBuilder.java:471)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:1077)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:296)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:352)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:441)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:444)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:555)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:503)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:585)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:594)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:490)
+	at org.eclipse.ui.actions.BuildAction$1.runInWorkspace(BuildAction.java:288)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:43)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.lang.ClassNotFoundException: org.slf4j.LoggerFactory cannot be found by de.marw.cmake.cdt_1.2.1.202501301713
+	at org.eclipse.osgi.internal.loader.BundleLoader.generateException(BundleLoader.java:562)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass0(BundleLoader.java:557)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:434)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:174)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	... 32 more
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:51:40.173
+!MESSAGE Scanning debug probes
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:51:40.367
+!MESSAGE DebugProbe [deviceName=USB-Blaster-2, serialNumber=1, displayName=DE-SoC [USB-1], probeType=null]
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:51:56.151
+!MESSAGE Detecting scan chain for serial number=1 jtagFreq=16000KHz tapReset=1
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:51:56.923
+!MESSAGE TapDetails [tapNumber=1, irLength=4, idCode=1268778103, name=SOCVHPS, numberOfCores=0, decimalNumberSystem=false]
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:51:56.924
+!MESSAGE TapDetails [tapNumber=2, irLength=10, idCode=47194333, name=5CSEBA6(.|ES)/5CSEMA6/.., numberOfCores=1, decimalNumberSystem=false]
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:51:56.924
+!MESSAGE CoreDetails [coreId=144207360, name=Nios V, coreIndex=0]
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:52:11.567
+!MESSAGE Scanning debug probes
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:52:11.684
+!MESSAGE DebugProbe [deviceName=USB-Blaster-2, serialNumber=1, displayName=DE-SoC [USB-1], probeType=null]
+
+!ENTRY com.ashling.riscfree.debug.opxd 1 0 2025-12-01 11:52:11.865
+!MESSAGE GDB SERVER COMMAND :C:\intelFPGA_lite\24.1std\riscfree\debugger\gdbserver-riscv\ash-riscv-gdb-server.exe --probe-type usb-blaster-2 --transport-type jtag --device 0x02D020DD --auto-detect true --gdb-port 65209 --jtag-frequency 16000KHz --tap-number 2 --core-number 0 --instance 1 --attach-mode OFF
+
+!ENTRY org.eclipse.embedcdt.debug.gdbjtag.core 4 1 2025-12-01 11:52:13.443
+!MESSAGE C:\intelFPGA_lite\24.1std\riscfree\RiscFree\/../toolchain/riscv32-unknown-elf/bin/riscv32-unknown-elf-gdb.exe --interpreter=mi2 --nx C:\Users\Loic\Desktop\ensea\niveau2\fpga\advanced\tp_nios_v\soft\app\build\Default\app.elf
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:56:54.185
+!MESSAGE Scanning debug probes
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:56:54.385
+!MESSAGE DebugProbe [deviceName=USB-Blaster-2, serialNumber=1, displayName=DE-SoC [USB-1], probeType=null]
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:56:59.490
+!MESSAGE Scanning debug probes
+
+!ENTRY com.ashling.riscfree.debug.utils 1 0 2025-12-01 11:56:59.606
+!MESSAGE DebugProbe [deviceName=USB-Blaster-2, serialNumber=1, displayName=DE-SoC [USB-1], probeType=null]
+
+!ENTRY com.ashling.riscfree.debug.opxd 1 0 2025-12-01 11:56:59.751
+!MESSAGE GDB SERVER COMMAND :C:\intelFPGA_lite\24.1std\riscfree\debugger\gdbserver-riscv\ash-riscv-gdb-server.exe --probe-type usb-blaster-2 --transport-type jtag --device 0x02D020DD --auto-detect true --gdb-port 61244 --jtag-frequency 16000KHz --tap-number 2 --core-number 0 --instance 1 --attach-mode OFF
+
+!ENTRY org.eclipse.embedcdt.debug.gdbjtag.core 4 1 2025-12-01 11:57:01.287
+!MESSAGE C:\intelFPGA_lite\24.1std\riscfree\RiscFree\/../toolchain/riscv32-unknown-elf/bin/riscv32-unknown-elf-gdb.exe --interpreter=mi2 --nx C:\Users\Loic\Desktop\ensea\niveau2\fpga\advanced\tp_nios_v\soft\app\build\Default\app.elf
